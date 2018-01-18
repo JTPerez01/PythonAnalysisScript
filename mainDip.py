@@ -3,6 +3,8 @@ import requests
 import hashlib
 from tkinter import *
 from tkinter import filedialog
+import hashlib
+
 
 
 #########################TO DO LIST###################################################
@@ -22,15 +24,18 @@ def malwaresfile(passedhash):
         passedhash}
     response = requests.get('https://www.malwares.com/api/v2/file/behaviorinfo', params=params)
     json_response = response.json()
-    print ("The Security Level From Malwares is: " + str(json_response["security_level"]))
-    if (json_response["security_level"] == 3):
-        print("This Is Declared As Severe Malicious\n")
-    elif (json_response["security_level"] == 2):
-        print("This Is Declared As Moderately Malicious\n")
-    elif (json_response["security_level"] == 1):
-        print("This Is No Detetction\n")
+    if (json_response['result_code'] == 0):
+        print("There is no data on this hash from Malwares")
     else:
-        print("Error: Check Code For Integrity\n")
+        print ("The Security Level From Malwares is: " + str(json_response["security_level"]))
+        if (json_response["security_level"] == 3):
+            print("This Is Declared As Severe Malicious\n")
+        elif (json_response["security_level"] == 2):
+            print("This Is Declared As Moderately Malicious\n")
+        elif (json_response["security_level"] == 1):
+            print("This Is No Detetction\n")
+        else:
+            print("Error: Check Code For Integrity\n")
 
 
 def virustotalfile(passedhash):
@@ -40,19 +45,31 @@ def virustotalfile(passedhash):
     json_response2 = response.json()
     print("The Number Of Positive Match Detections On VirusTotal: " + str(json_response2["positives"]))
 
-def virustotalurl():
-    params = {'apikey': '312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad', 'url': 'http://www.virustotal.com'}
+def virustotalurl(passedurl):
+    params = {'apikey': '312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad', 'url': passedurl}
     response = requests.post('https://www.virustotal.com/vtapi/v2/url/scan', data=params)
     json_response = response.json()
     params = {'apikey': '312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad', 'resource': str(json_response['scan_id'])}
     response = requests.post('https://www.virustotal.com/vtapi/v2/url/report',
                              params=params)
     json_response = response.json()
-    print ("VirusTotal URL Positives: " + str(json_response['positives']))
+    print ("VirusTotal URL Positives: " + str(json_response['positives']) +"\nLink Of Report: " + str(json_response['permalink']))
 
 def hashthenfilesearch():
     root.filename = filedialog.askopenfilename(initialdir = 'C:\\', title = "Hash This File")
-    print (root.filename)
+    fname = root.filename
+    hash_sha256 = hashlib.sha256()
+    with open(fname, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_sha256.update(chunk)
+    filehash = hash_sha256.hexdigest()
+    print("File was hashed to(md5): " + str(filehash) + " passing to file analysis.")
+    filereport(filehash)
+
+
+
+
+
 
 
 
@@ -60,11 +77,14 @@ def hashthenfilesearch():
 def urlreport():
     data = e.get()
     print("Passing URL: " + str(data))
-    virustotalurl()
+    virustotalurl(data)
 
-def filereport():
-    data = e2.get()
-    print("Passing HASH: " + str(data))
+def filereport(filehash):
+    if (filehash == None):
+        data = e2.get()
+        print("Passing HASH: " + str(data))
+    else:
+        data = filehash
     malwaresfile(data)
     virustotalfile(data)
 
@@ -90,5 +110,8 @@ if __name__ == '__main__':
 
     b3 = Button(root, text='Upoad File', command=hashthenfilesearch)
     b3.pack(side='right')
+
+    label = Label(root, text="hey lol")
+    label.pack(side='bottom')
 
     root.mainloop()
