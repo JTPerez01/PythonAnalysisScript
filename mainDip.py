@@ -13,8 +13,9 @@ import hashlib
 # Add md5 hashing
 # Add report writing, complete with link
 # Add support for URL search with phishing - DONE
-# Get and display a screenshot
+# Get and display a screenshot - Applied for API key
 # Add multithreading for the requests and then ask for results later?
+# Mesh with PySide for license properties?
 
 ########################Malicious File Detection######################################
 
