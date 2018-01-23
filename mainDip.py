@@ -13,12 +13,15 @@ import hashlib
 # Add md5 hashing
 # Add report writing, complete with link
 # Add support for URL search with phishing - DONE
+# Get and display a screenshot
+# Add multithreading for the requests and then ask for results later?
 
 ########################Malicious File Detection######################################
 
 
 # add error protection
-# Malwares
+
+# Malwares file search based on hash
 def malwaresfile(passedhash):
     params = {'api_key': '2343F1B952B883187CCE5BF73A81681E698774C5BC2B15E9AD6DC2AB1DC83062', 'hash':
         passedhash}
@@ -37,7 +40,7 @@ def malwaresfile(passedhash):
         else:
             print("Error: Check Code For Integrity\n")
 
-
+#Virus Total file search based on hash
 def virustotalfile(passedhash):
     params = {'apikey': '312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad',
               'resource': passedhash}
@@ -45,6 +48,7 @@ def virustotalfile(passedhash):
     json_response2 = response.json()
     print("The Number Of Positive Match Detections On VirusTotal: " + str(json_response2["positives"]))
 
+    #Virus Total url search
 def virustotalurl(passedurl):
     params = {'apikey': '312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad', 'url': passedurl}
     response = requests.post('https://www.virustotal.com/vtapi/v2/url/scan', data=params)
@@ -54,7 +58,14 @@ def virustotalurl(passedurl):
                              params=params)
     json_response = response.json()
     print ("VirusTotal URL Positives: " + str(json_response['positives']) +"\nLink Of Report: " + str(json_response['permalink']))
+  
+#Urlscan.io url search (NOT WORKING NEED API KEY) remember to aquire the image
+def scaniourl(passedurl):
+    headers = { 'Content-Type': 'application/json', 'API-Key': '$apikey'}
+    params = {"url": passedurl, "public": "on"}
+    json_response = requests.post('https://urlscan.io/api/v1/scan/', headers=headers, data=params)
 
+#SHA256 hashing of file in chunks    
 def hashthenfilesearch():
     root.filename = filedialog.askopenfilename(initialdir = 'C:\\', title = "Hash This File")
     fname = root.filename
