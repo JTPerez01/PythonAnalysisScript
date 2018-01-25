@@ -62,7 +62,7 @@ def virustotalurl(passedurl):
   
 #Urlscan.io url search (NOT WORKING NEED API KEY) remember to aquire the image
 def scaniourl(passedurl):
-    headers = { 'Content-Type': 'application/json', 'API-Key': '$apikey'}
+    headers = { 'Content-Type': 'application/json', 'API-Key': '292eb904-b5c3-4c56-be26-06aebd73fae8'}
     params = {"url": passedurl, "public": "on"}
     json_response = requests.post('https://urlscan.io/api/v1/scan/', headers=headers, data=params)
 
