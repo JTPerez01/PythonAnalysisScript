@@ -21,6 +21,8 @@ import hashlib
 # Get and display a screenshot - Applied for API key - WORKIN ON
 # Add multithreading for the requests and then ask for results later?
 # Mesh with PySide for license properties?
+# Add outlook Suspicious Folder Scan
+# Is there a way to convert the outlook safelink into regular link?
 
 ########################API KEYS######################################################
 #VirusTotal.com = 312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad
