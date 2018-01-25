@@ -1,3 +1,8 @@
+#########################NEED TO KNOW################################################
+#Most of these API keys have rate limited queries (usually a maximum of 1 every 2 seconds
+#So the program will fail If you switch from hash query to url query really fast
+#this is because in both instances VirusTotal is used
+
 # Is the hash function overloaded in both VT and Malwares
 import requests
 import hashlib
@@ -10,13 +15,17 @@ import hashlib
 #########################TO DO LIST###################################################
 # Add a gui - DONE
 # Research the ability to drag and drop
-# Add md5 hashing
+# Add md5 hashing - DONE with SHA256
 # Add report writing, complete with link
 # Add support for URL search with phishing - DONE
-# Get and display a screenshot - Applied for API key
+# Get and display a screenshot - Applied for API key - WORKIN ON
 # Add multithreading for the requests and then ask for results later?
 # Mesh with PySide for license properties?
 
+########################API KEYS######################################################
+#VirusTotal.com = 312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad
+#Malwares.com = 2343F1B952B883187CCE5BF73A81681E698774C5BC2B15E9AD6DC2AB1DC83062
+#Urlscan.io = 292eb904-b5c3-4c56-be26-06aebd73fae8
 ########################Malicious File Detection######################################
 
 
@@ -41,6 +50,7 @@ def malwaresfile(passedhash):
         else:
             print("Error: Check Code For Integrity\n")
 
+            
 #Virus Total file search based on hash
 def virustotalfile(passedhash):
     params = {'apikey': '312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad',
@@ -49,6 +59,7 @@ def virustotalfile(passedhash):
     json_response2 = response.json()
     print("The Number Of Positive Match Detections On VirusTotal: " + str(json_response2["positives"]))
 
+    
     #Virus Total url search
 def virustotalurl(passedurl):
     params = {'apikey': '312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad', 'url': passedurl}
@@ -60,12 +71,16 @@ def virustotalurl(passedurl):
     json_response = response.json()
     print ("VirusTotal URL Positives: " + str(json_response['positives']) +"\nLink Of Report: " + str(json_response['permalink']))
   
-#Urlscan.io url search (NOT WORKING NEED API KEY) remember to aquire the image
+
+#Urlscan.io url search remember to aquire the image
 def scaniourl(passedurl):
     headers = { 'Content-Type': 'application/json', 'API-Key': '292eb904-b5c3-4c56-be26-06aebd73fae8'}
     params = {"url": passedurl, "public": "on"}
     json_response = requests.post('https://urlscan.io/api/v1/scan/', headers=headers, data=params)
+    print (str(json_response))
+ 
 
+    
 #SHA256 hashing of file in chunks    
 def hashthenfilesearch():
     root.filename = filedialog.askopenfilename(initialdir = 'C:\\', title = "Hash This File")
@@ -77,12 +92,6 @@ def hashthenfilesearch():
     filehash = hash_sha256.hexdigest()
     print("File was hashed to(md5): " + str(filehash) + " passing to file analysis.")
     filereport(filehash)
-
-
-
-
-
-
 
 
 ########################REPORT#########################################################
@@ -99,8 +108,9 @@ def filereport(filehash):
         data = filehash
     malwaresfile(data)
     virustotalfile(data)
-
-if __name__ == '__main__':
+    
+    
+def main():
     # add tkinter buttons to accept url or choose file
     root = Tk()
     root.title("CenterPoint Diagnostic Information Program")
@@ -127,3 +137,7 @@ if __name__ == '__main__':
     label.pack(side='bottom')
 
     root.mainloop()
+    
+
+if __name__ == '__main__':
+    main()
