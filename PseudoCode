@@ -3,7 +3,7 @@ This program has three main parts to it.
 
 
 1. In the first part because of the way our Suspicious Email folder is set up we would need to use a request like
-GET https://outlook.office.com/api/v2.0/me/MailFolders/sentitems/messages/?$select=Sender,Id,HasAttachments=True
+GET https://outlook.office.com/api/v2.0/me/MailFolders/SuspiciousEmails/messages/?$select=Sender,Id,Address,HasAttachments=True
 This is just a formality as all items in this folder will have attachments. Then we will have to download the attachments and start the report. With a request like 
 GET https://outlook.office.com/api/v2.0/me/messages/{message_id}/attachments
 At this point we have the Outlook item that is the actual reported phish email recieved from the caller.
