@@ -131,7 +131,7 @@ function clear()
     target_url = None
     for x in range(int(len(params))):
         namval = params[x].split("=")
-        if(namval[0]=="url):
+        if(namval[0]=="url"):
            target_url = namval[1]
     decode_url = urllib.quote(target_url, safe='~()*!.\'')
     #what does this return? still ned equiv of last line
