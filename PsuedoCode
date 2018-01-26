@@ -1,0 +1,17 @@
+This program has three main parts to it. 
+
+
+
+1. In the first part because of the way our Suspicious Email folder is set up we would need to use a request like
+GET https://outlook.office.com/api/v2.0/me/MailFolders/sentitems/messages/?$select=Sender,Id,HasAttachments=True
+This is just a formality as all items in this folder will have attachments. Then we will have to download the attachments and start the report. With a request like 
+GET https://outlook.office.com/api/v2.0/me/messages/{message_id}/attachments
+At this point we have the Outlook item that is the actual reported phish email recieved from the caller.
+We then need to extract the url or attachmentfor analysis.
+
+2. The analysis program will take the url and search VT/Malwares/URLScan for evdence of malicious activity. This part is mostly done and just needs to be compiled into a report. The report that this returns should include the number of positive hits from VT and Malwares security level as well as the preview screenshot from URLScan if I can get it to work.
+
+3. In order to have the task mostly automated we will assign the ticket to the security operations center where it will be reviewed by junior analyst. It would be cool if the program would automatically attach the outlook item and the screenshot and populate the notes area with the report and the suspected link. The junior analysts will have the option to assign the ticket to themselves and resolve it, or escalate to the on-call analyst. Then a reply should be sent to recipient of the email.
+
+
+
