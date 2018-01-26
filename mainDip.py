@@ -97,44 +97,15 @@ def hashthenfilesearch():
 #Safelink passed to program
 def safelinkpassed():
     data = e4.get()
-    """
-    replicate this function
-    function decode_url()
-{
-    setTimeout("generate_decode_url()", 20);
-}
-
-function generate_decode_url()
-{
-    var link = document.getElementById("safelink").value;
-    var url_parts = link.split("?")[1];
-    var params = url_parts.split("&");
-    var target_url = "Error:  couldn't find target URL.";
-    for(n=0;n<params.length;n++)
-    {
-        namval = params[n].split("=");
-        if(namval[0]=="url") target_url = namval[1];
-    }
-    
-    decode_url = decodeURIComponent(target_url);
-    document.getElementById("target_url").value = decode_url;
-    
-}
-
-function clear()
-{
-    location.reload();
-}
-    """
     url_parts = str(data).split("?")[1]
     params = url_parts.split("&")
     target_url = None
     for x in range(int(len(params))):
         namval = params[x].split("=")
         if(namval[0]=="url"):
-           target_url = namval[1]
-    decode_url = urllib.quote(target_url, safe='~()*!.\'')
-    #what does this return? still ned equiv of last line
+            target_url = namval[1]
+    decode_url = urllib.unquote(target_url)
+    urlreport(decode_url)
       
 
 ########################REPORT#########################################################
