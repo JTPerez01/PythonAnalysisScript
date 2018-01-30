@@ -1,15 +1,15 @@
 #########################NEED TO KNOW################################################
-#Most of these API keys have rate limited queries (usually a maximum of 1 every 2 seconds
-#So the program will fail If you switch from hash query to url query really fast
-#this is because in both instances VirusTotal is used
+# Most of these API keys have rate limited queries (usually a maximum of 1 every 2 seconds
+# So the program will fail If you switch from hash query to url query really fast
+# this is because in both instances VirusTotal is used
 
 # Is the hash function overloaded in both VT and Malwares
 import requests
 import hashlib
+import urllib
+import json
 from tkinter import *
 from tkinter import filedialog
-
-
 
 
 #########################TO DO LIST###################################################
@@ -25,9 +25,9 @@ from tkinter import filedialog
 # Is there a way to convert the outlook safelink into regular link?
 
 ########################API KEYS######################################################
-#VirusTotal.com = 312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad
-#Malwares.com = 2343F1B952B883187CCE5BF73A81681E698774C5BC2B15E9AD6DC2AB1DC83062
-#Urlscan.io = 292eb904-b5c3-4c56-be26-06aebd73fae8
+# VirusTotal.com = 312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad
+# Malwares.com = 2343F1B952B883187CCE5BF73A81681E698774C5BC2B15E9AD6DC2AB1DC83062
+# Urlscan.io = 292eb904-b5c3-4c56-be26-06aebd73fae8
 ########################Malicious File Detection######################################
 
 
@@ -37,12 +37,12 @@ from tkinter import filedialog
 def malwaresfile(passedhash):
     params = {'api_key': '2343F1B952B883187CCE5BF73A81681E698774C5BC2B15E9AD6DC2AB1DC83062', 'hash':
         passedhash}
-    response = requests.get('https://www.malwares.com/api/v2/file/behaviorinfo', params=params)
+    response = requests.get('https://www.malwares.com/api/v2/file/behaviorinfo', params=params, verify = False)
     json_response = response.json()
     if (json_response['result_code'] == 0):
         print("There is no data on this hash from Malwares")
     else:
-        print ("The Security Level From Malwares is: " + str(json_response["security_level"]))
+        print("The Security Level From Malwares is: " + str(json_response["security_level"]))
         if (json_response["security_level"] == 3):
             print("This Is Declared As Severe Malicious\n")
         elif (json_response["security_level"] == 2):
@@ -52,40 +52,41 @@ def malwaresfile(passedhash):
         else:
             print("Error: Check Code For Integrity\n")
 
-            
-#Virus Total file search based on hash
+
+# Virus Total file search based on hash
 def virustotalfile(passedhash):
     params = {'apikey': '312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad',
               'resource': passedhash}
-    response = requests.get('https://www.virustotal.com/vtapi/v2/file/report', params=params)
+    response = requests.get('https://www.virustotal.com/vtapi/v2/file/report', params=params, verify = False)
     json_response2 = response.json()
     print("The Number Of Positive Match Detections On VirusTotal: " + str(json_response2["positives"]))
 
-    
-    #Virus Total url search
+    # Virus Total url search
+
+
 def virustotalurl(passedurl):
     params = {'apikey': '312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad', 'url': passedurl}
-    response = requests.post('https://www.virustotal.com/vtapi/v2/url/scan', data=params)
+    response = requests.post('https://www.virustotal.com/vtapi/v2/url/scan', data=params, verify = False)
     json_response = response.json()
-    params = {'apikey': '312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad', 'resource': str(json_response['scan_id'])}
+    params = {'apikey': '312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad',
+              'resource': str(json_response['scan_id'])}
     response = requests.post('https://www.virustotal.com/vtapi/v2/url/report',
-                             params=params)
+                             params=params, verify = False)
     json_response = response.json()
-    print ("VirusTotal URL Positives: " + str(json_response['positives']) +"\nLink Of Report: " + str(json_response['permalink']))
-  
+    result1 = ("VirusTotal URL Positives: " + str(json_response['positives']) + "\nLink Of Report: " + str(json_response['permalink']))
+    print (result1)
 
-#Urlscan.io url search remember to aquire the image
+# Urlscan.io url search remember to aquire the image
 def scaniourl(passedurl):
-    headers = { 'Content-Type': 'application/json', 'API-Key': '292eb904-b5c3-4c56-be26-06aebd73fae8'}
+    headers = {'Content-Type': 'application/json', 'API-Key': '292eb904-b5c3-4c56-be26-06aebd73fae8'}
     params = {"url": passedurl, "public": "on"}
     json_response = requests.post('https://urlscan.io/api/v1/scan/', headers=headers, data=params)
-    print (str(json_response))
- 
+    print(str(json_response))
 
-    
-#SHA256 hashing of file in chunks    
+
+# SHA256 hashing of file in chunks
 def hashthenfilesearch():
-    root.filename = filedialog.askopenfilename(initialdir = 'C:\\', title = "Hash This File")
+    root.filename = filedialog.askopenfilename(initialdir='C:\\', title="Hash This File")
     fname = root.filename
     hash_sha256 = hashlib.sha256()
     with open(fname, "rb") as f:
@@ -94,7 +95,9 @@ def hashthenfilesearch():
     filehash = hash_sha256.hexdigest()
     print("File was hashed to(md5): " + str(filehash) + " passing to file analysis.")
     filereport(filehash)
-#Safelink passed to program
+
+
+# Safelink passed to program
 def safelinkpassed():
     data = e4.get()
     url_parts = str(data).split("?")[1]
@@ -102,19 +105,19 @@ def safelinkpassed():
     target_url = None
     for x in range(int(len(params))):
         namval = params[x].split("=")
-        if(namval[0]=="url"):
+        if (namval[0] == "url"):
             target_url = namval[1]
     decode_url = urllib.unquote(target_url)
     urlreport(decode_url)
-      
+
 
 ########################REPORT#########################################################
 def urlreport():
     data = e.get()
     print("Passing URL: " + str(data))
-    virustotalurl(data)
 
-def filereport(filehash):
+
+def filereport(filehash=None):
     if (filehash == None):
         data = e2.get()
         print("Passing HASH: " + str(data))
@@ -122,14 +125,13 @@ def filereport(filehash):
         data = filehash
     malwaresfile(data)
     virustotalfile(data)
-    
-    
-def main():
+
+if __name__ == '__main__':
     # add tkinter buttons to accept url or choose file
     root = Tk()
     root.title("CenterPoint Diagnostic Information Program")
-    root.minsize(width=200,height=100)
-    #input with button for urlreport
+    root.minsize(width=200, height=300)
+    # input with button for urlreport
     e = Entry(root)
     e.pack(side='right')
     e.focus_set()
@@ -144,20 +146,19 @@ def main():
     b2 = Button(root, text='Get File Report', command=filereport)
     b2.pack(side='right')
 
-    b3 = Button(root, text='Upoad File', command=hashthenfilesearch)
-    b3.pack(side='right')
-    
+    b3 = Button(root, text='Upload File', command=hashthenfilesearch)
+    b3.pack(side='top')
+
     e4 = Entry(root)
-    e4.pack(side='right')
+    e4.pack(side='bottom')
     e4.focus_set()
 
-    b4 = Button(root, text='Safelink decode/analysis', command=safelinkpass)
-    
-    label = Label(root, text="hey lol")
+    b4 = Button(root, text='Safelink decode/analysis', command=safelinkpassed)
+    b4.pack(side='bottom')
+    label = Label(root, text="Never Forget")
     label.pack(side='bottom')
 
     root.mainloop()
-    
 
-if __name__ == '__main__':
-    main()
+
+
