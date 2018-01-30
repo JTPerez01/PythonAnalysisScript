@@ -74,14 +74,14 @@ def virustotalurl(passedurl):
                              params=params, verify = False)
     json_response = response.json()
     result1 = ("VirusTotal URL Positives: " + str(json_response['positives']) + "\nLink Of Report: " + str(json_response['permalink']))
-    print (result1)
+    return (str(result1))
 
 # Urlscan.io url search remember to aquire the image
 def scaniourl(passedurl):
     headers = {'Content-Type': 'application/json', 'API-Key': '292eb904-b5c3-4c56-be26-06aebd73fae8'}
     params = {"url": passedurl, "public": "on"}
-    json_response = requests.post('https://urlscan.io/api/v1/scan/', headers=headers, data=params)
-    print(str(json_response))
+    json_response = requests.post('https://urlscan.io/api/v1/scan/', headers=headers, data=params, verify = False)
+    return (str(json_response))
 
 
 # SHA256 hashing of file in chunks
@@ -115,7 +115,10 @@ def safelinkpassed():
 def urlreport():
     data = e.get()
     print("Passing URL: " + str(data))
-
+    report = ""
+    report += virustotalurl(str(data))
+    report += scaniourl(str(data))
+    print (report)
 
 def filereport(filehash=None):
     if (filehash == None):
