@@ -4,6 +4,7 @@
 # this is because in both instances VirusTotal is used
 
 # Is the hash function overloaded in both VT and Malwares
+#import servicenow
 import requests
 import hashlib
 import urllib
