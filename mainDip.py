@@ -161,14 +161,14 @@ if __name__ == '__main__':
     caller.grid(row = 2, column = 1)
 
 
-    e = Entry(root, width = 200)
+    e = Entry(root, width = 180)
     e.grid(row=3, column = 1)
 
 
     b = Button(root, text='Get URL Report', command=urlreport, font = "System")
     b.grid(row = 3, column = 0)
 
-    e2 = Entry(root, width = 200)
+    e2 = Entry(root, width = 180)
     e2.grid(row = 4, column = 1)
 
 
@@ -179,12 +179,12 @@ if __name__ == '__main__':
     b3.grid(row = 5, columnspan = 2, sticky = 'NSEW')
 
 
-    e4 = Entry(root, width = 200)
+    e4 = Entry(root, width = 180)
     e4.grid(row = 6, column = 1)
 
 
     b4 = Button(root, text='Safelink decode/analysis', command=safelinkpassed, font = "System")
-    b4.grid(row = 7, column = 0)
+    b4.grid(row = 6, column = 0)
     label = Label(root, text="Never Forget").grid(row = 7, columnspan = 2)
 
 
