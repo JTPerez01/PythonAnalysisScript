@@ -4,13 +4,14 @@
 # this is because in both instances VirusTotal is used
 
 # Is the hash function overloaded in both VT and Malwares
-#import servicenow
+import servicenow
 import requests
 import hashlib
 import urllib
 import json
 from tkinter import *
 from tkinter import filedialog
+
 
 
 #########################TO DO LIST###################################################
@@ -108,18 +109,23 @@ def safelinkpassed():
         namval = params[x].split("=")
         if (namval[0] == "url"):
             target_url = namval[1]
-    decode_url = urllib.unquote(target_url)
+    decode_url = urllib.parse.unquote(target_url)
     urlreport(decode_url)
 
 
 ########################REPORT#########################################################
-def urlreport():
-    data = e.get()
+def urlreport(urlpassed=None):
+    if (urlpassed == None):
+        data = e.get()
+    else:
+        data = urlpassed
     print("Passing URL: " + str(data))
     report = ""
     report += virustotalurl(str(data))
     report += scaniourl(str(data))
     print (report)
+    servicenow.ticketgenerate(username,password,caller_id,report)
+
 
 def filereport(filehash=None):
     if (filehash == None):
@@ -134,33 +140,44 @@ if __name__ == '__main__':
     # add tkinter buttons to accept url or choose file
     root = Tk()
     root.title("CenterPoint Diagnostic Information Program")
-    root.minsize(width=200, height=300)
+    root.minsize(width=300, height=150)
     # input with button for urlreport
-    e = Entry(root)
-    e.pack(side='right')
-    e.focus_set()
+    l1 = Label(root, text="CNP Username")
+    l1.grid(row = 0, column = 0)
+    usr = Entry(root, width=20)
+    usr.grid(row = 0, column = 1)
 
-    b = Button(root, text='Get URL Report', command=urlreport)
-    b.pack(side='right')
+    l2 = Label(root, text="CNP Password")
+    l2.grid(row = 1, column = 0)
+    pw = Entry(root, show="*", width = 20)
+    pw.grid(row = 1, column = 1)
 
-    e2 = Entry(root)
-    e2.pack(side='right')
-    e2.focus_set()
+    e = Entry(root, width = 200)
+    e.grid(row=2, column = 1)
 
-    b2 = Button(root, text='Get File Report', command=filereport)
-    b2.pack(side='right')
 
-    b3 = Button(root, text='Upload File', command=hashthenfilesearch)
-    b3.pack(side='top')
+    b = Button(root, text='Get URL Report', command=urlreport, font = "System")
+    b.grid(row = 2, column = 0)
 
-    e4 = Entry(root)
-    e4.pack(side='bottom')
-    e4.focus_set()
+    e2 = Entry(root, width = 200)
+    e2.grid(row = 3, column = 1)
 
-    b4 = Button(root, text='Safelink decode/analysis', command=safelinkpassed)
-    b4.pack(side='bottom')
-    label = Label(root, text="Never Forget")
-    label.pack(side='bottom')
+
+    b2 = Button(root, text='Get File Report', command=filereport, font = "System")
+    b2.grid(row = 3, column = 0)
+
+    b3 = Button(root, text='Upload File', command=hashthenfilesearch, font = "System" )
+    b3.grid(row = 4, columnspan = 2, sticky = 'NSEW')
+
+
+    e4 = Entry(root, width = 200)
+    e4.grid(row = 5, column = 1)
+
+
+    b4 = Button(root, text='Safelink decode/analysis', command=safelinkpassed, font = "System")
+    b4.grid(row = 6, column = 0)
+    label = Label(root, text="Never Forget").grid(row = 6, columnspan = 2)
+
 
     root.mainloop()
 
