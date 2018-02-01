@@ -124,6 +124,9 @@ def urlreport(urlpassed=None):
     report += virustotalurl(str(data))
     report += scaniourl(str(data))
     print (report)
+    username = usr.get()
+    password = pw.get()
+    caller_id = caller.get()
     servicenow.ticketgenerate(username,password,caller_id,report)
 
 
@@ -152,31 +155,37 @@ if __name__ == '__main__':
     pw = Entry(root, show="*", width = 20)
     pw.grid(row = 1, column = 1)
 
+    l3 = Label(root, text="ServiceNow Caller ID")
+    l3.grid(row = 2, column = 0)
+    caller = Entry(root, width = 20)
+    caller.grid(row = 2, column = 1)
+
+
     e = Entry(root, width = 200)
-    e.grid(row=2, column = 1)
+    e.grid(row=3, column = 1)
 
 
     b = Button(root, text='Get URL Report', command=urlreport, font = "System")
-    b.grid(row = 2, column = 0)
+    b.grid(row = 3, column = 0)
 
     e2 = Entry(root, width = 200)
-    e2.grid(row = 3, column = 1)
+    e2.grid(row = 4, column = 1)
 
 
     b2 = Button(root, text='Get File Report', command=filereport, font = "System")
-    b2.grid(row = 3, column = 0)
+    b2.grid(row = 4, column = 0)
 
     b3 = Button(root, text='Upload File', command=hashthenfilesearch, font = "System" )
-    b3.grid(row = 4, columnspan = 2, sticky = 'NSEW')
+    b3.grid(row = 5, columnspan = 2, sticky = 'NSEW')
 
 
     e4 = Entry(root, width = 200)
-    e4.grid(row = 5, column = 1)
+    e4.grid(row = 6, column = 1)
 
 
     b4 = Button(root, text='Safelink decode/analysis', command=safelinkpassed, font = "System")
-    b4.grid(row = 6, column = 0)
-    label = Label(root, text="Never Forget").grid(row = 6, columnspan = 2)
+    b4.grid(row = 7, column = 0)
+    label = Label(root, text="Never Forget").grid(row = 7, columnspan = 2)
 
 
     root.mainloop()
