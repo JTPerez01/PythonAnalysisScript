@@ -75,6 +75,7 @@ def virustotalurl(passedurl):
     response = requests.post('https://www.virustotal.com/vtapi/v2/url/report',
                              params=params, verify = False)
     json_response = response.json()
+    print (json_response)
     result1 = ("VirusTotal URL Positives: " + str(json_response['positives']) + "\nLink Of Report: " + str(json_response['permalink']))
     return (str(result1))
 
@@ -95,7 +96,7 @@ def hashthenfilesearch():
         for chunk in iter(lambda: f.read(4096), b""):
             hash_sha256.update(chunk)
     filehash = hash_sha256.hexdigest()
-    print("File was hashed to(md5): " + str(filehash) + " passing to file analysis.")
+    print("File was hashed to(sha256): " + str(filehash) + " passing to file analysis.")
     filereport(filehash)
 
 
@@ -122,6 +123,7 @@ def urlreport(urlpassed=None):
     print("Passing URL: " + str(data))
     report = ""
     report += virustotalurl(str(data))
+    report += "\n"
     report += scaniourl(str(data))
     print (report)
     username = usr.get()
@@ -159,8 +161,8 @@ def ticketgenerate(username, password, caller_id, description):
     # the person who is calling and being assigned to must already be in the system
     payload = {
         'sysparm_action': 'insert',
-        'category': 'Security - Cyber Security',
-        'subcategory': 'Phishing/Spam Alert',
+        'category': 'Security - Cybersecurity',
+        'subcategory': 'Phishing / Spam Alert',
         'affected_user': caller_id,
         'impact': '3',
         'urgency': '3',
@@ -169,9 +171,9 @@ def ticketgenerate(username, password, caller_id, description):
         'description': description,
         'short_description': 'Phishing - User Reported (DIP)',
         'contact_type': 'Self-service',
-        'cmdb_ci': 'Email',
-        'caller_id': caller_id,
+        'user_id': username,
         'caller': caller_id,
+        'caller_id': caller_id,
         'assigned_to': caller_id,
         'state': 'New',
         'assignment_group': 'Security Operations Center'
