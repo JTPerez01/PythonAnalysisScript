@@ -2,7 +2,7 @@
 # Most of these API keys have rate limited queries (usually a maximum of 1 every 2 seconds
 # So the program will fail If you switch from hash query to url query really fast
 # this is because in both instances VirusTotal is used
-#https://docs.servicenow.com/bundle/geneva-servicenow-platform/page/integrate/inbound_rest/reference/r_AttachmentAPI-POST.html 
+#https://docs.servicenow.com/bundle/geneva-servicenow-platform/page/integrate/inbound_rest/reference/r_AttachmentAPI-POST.html
 # Add the module to attach the .png, that would be wicked-pissah
 import hashlib
 from tkinter import *
@@ -172,7 +172,7 @@ def getScreenshot(urlpassed):
             if tCounter > timeout:
                 print("Timed out while downloading: " + resultkey)
                 break
-    return imageRes
+    return [imageRes, resultkey]
 
 def sneakpeak(urlpassed, report):
     sneakreport = report
@@ -206,6 +206,40 @@ def sneakpeak(urlpassed, report):
 
     popup.mainloop()
 
+def attachscreenshot(screenshotlink, screenshotkey, username, password, sysId):
+    image_url = screenshotlink
+    sysId = sysId
+    imageId = screenshotkey + '.png'
+    image_byt = urllib.request.urlopen(image_url).read()
+    # Set the request parameters
+    url = 'https://centerpointenergy.service-now.com/api/now/attachment/file?table_name=incident&table_sys_id=' + sysId + '&file_name=' + imageId
+
+    # Specify the file To send. When specifying fles to send make sure you specify the path to the file, in
+    # this example the file was located in the same directory as the python script being executed.
+    data = image_byt
+
+    # Eg. User name="admin", Password="admin" for this code sample.
+    user = username
+    pwd = password
+
+    # Set proper headers
+    headers = {"Content-Type": "image/png", "Accept": "application/json"}
+
+    # Do the HTTP request
+    response = requests.post(url, auth=(user, pwd), headers=headers, data=image_byt, verify=False)
+
+    # Check for HTTP codes other than 201
+    if response.status_code != 201:
+        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
+        exit()
+
+    # Decode the JSON response into a dictionary and use the data
+    data = response.json()
+    print(data)
+
+
+
+
 ########################REPORT#########################################################
 def urlreport(urlpassed=None):
     if (urlpassed == None):
@@ -222,11 +256,13 @@ def urlreport(urlpassed=None):
     password = pw.get()
     caller_id = caller.get()
     report += "\nLink at: " + data
-    ticketgenerate(username, password, caller_id, report)
+    sysId = ticketgenerate(username, password, caller_id, report)
     #run the screenshot capture
     screenshotlink = getScreenshot(data)
+    #attach screenshot to ticket
+    attachscreenshot(screenshotlink[0], screenshotlink[1], username, password, sysId)
     #run the popup nugget
-    sneakpeak(screenshotlink, report)
+    sneakpeak(screenshotlink[0], report)
 
 
 
@@ -283,8 +319,11 @@ def ticketgenerate(username, password, caller_id, description):
     assert (r.status_code == 200)
     print("Response Status Code: " + str(r.status_code))
     print("Response JSON Content: " + str(content))
+    resultlist = content['records']
+    sysId = resultlist[0]['sys_id']
+    print (sysId)
     if str(r.status_code) == "200":
-        return True
+        return sysId
 
 
 if __name__ == '__main__':
