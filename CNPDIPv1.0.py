@@ -108,6 +108,7 @@ def hashthenfilesearch():
 # Safelink passed to program
 def safelinkpassed():
     data = e4.get()
+    e4.delete(0, END)
     url_parts = str(data).split("?")[1]
     params = url_parts.split("&")
     target_url = None
@@ -240,6 +241,7 @@ def attachscreenshot(screenshotlink, screenshotkey, username, password, sysId):
 def urlreport(urlpassed=None):
     if (urlpassed == None):
         data = e.get()
+        e.delete(0, END)
     else:
         data = urlpassed
     print("Passing URL: " + str(data))
@@ -264,12 +266,14 @@ def urlreport(urlpassed=None):
 def filereport(filehash=None):
     if (filehash == None):
         data = e2.get()
+        e2.delete(0, END)
         print("Passing HASH: " + str(data))
     else:
         data = filehash
     malwaresfile(data)
     virustotalfile(data)
 
+#######################TICKET GENERATION################################################
 
 def ticketgenerate(username, password, caller_id, description):
     proxies = {
