@@ -311,8 +311,6 @@ def ticketgenerate(username, password, caller_id, description):
 
     r = requests.post(url=uri, data=json.dumps(payload), auth=auth, verify=False, headers=headers)
     content = r.json()
-    if (r.status_code != 200):
-        tkMessageBox.showerror("Error", "Status Code != 200")
     assert (r.status_code == 200)
     print("Response Status Code: " + str(r.status_code))
     print("Response JSON Content: " + str(content))
