@@ -1,8 +1,8 @@
 #########################NEED TO KNOW################################################
 # Most of these API keys have rate limited queries (usually a maximum of 1 every 2 seconds
 # So the program will fail If you switch from hash query to url query really fast
-# this is because in both instances VirusTotal is used
-#https://docs.servicenow.com/bundle/geneva-servicenow-platform/page/integrate/inbound_rest/reference/r_AttachmentAPI-POST.html
+# this is because in both instances VirusTotal is used69 gto
+# https://docs.servicenow.com/bundle/geneva-servicenow-platform/page/integrate/inbound_rest/reference/r_AttachmentAPI-POST.html
 # Add the module to attach the .png, that would be wicked-pissah
 import hashlib
 from tkinter import *
@@ -14,8 +14,6 @@ import time
 import requests
 from requests.auth import HTTPBasicAuth
 
-# Is the hash function overloaded in both VT and Malwares
-import servicenow
 
 
 #########################TO DO LIST###################################################
@@ -31,9 +29,10 @@ import servicenow
 # Is there a way to convert the outlook safelink into regular link?
 
 ########################API KEYS######################################################
-# VirusTotal.com = 312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad
-# Malwares.com = 2343F1B952B883187CCE5BF73A81681E698774C5BC2B15E9AD6DC2AB1DC83062
-# Urlscan.io = 292eb904-b5c3-4c56-be26-06aebd73fae8
+virustotalapi = '312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad'
+malwaresapi = '2343F1B952B883187CCE5BF73A81681E698774C5BC2B15E9AD6DC2AB1DC83062'
+urlscanapi = '292eb904-b5c3-4c56-be26-06aebd73fae8'
+screenshotapi = 'b00e28cf-6204-44f0-af6f-b7b0b48f6750'
 ########################Malicious File Detection######################################
 
 
@@ -41,7 +40,7 @@ import servicenow
 
 # Malwares file search based on hash
 def malwaresfile(passedhash):
-    params = {'api_key': '2343F1B952B883187CCE5BF73A81681E698774C5BC2B15E9AD6DC2AB1DC83062', 'hash':
+    params = {'api_key': malwaresapi, 'hash':
         passedhash}
     response = requests.get('https://www.malwares.com/api/v2/file/behaviorinfo', params=params, verify=False)
     json_response = response.json()
@@ -61,7 +60,7 @@ def malwaresfile(passedhash):
 
 # Virus Total file search based on hash
 def virustotalfile(passedhash):
-    params = {'apikey': '312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad',
+    params = {'apikey': virustotalapi,
               'resource': passedhash}
     response = requests.get('https://www.virustotal.com/vtapi/v2/file/report', params=params, verify=False)
     json_response2 = response.json()
@@ -71,10 +70,10 @@ def virustotalfile(passedhash):
 
 
 def virustotalurl(passedurl):
-    params = {'apikey': '312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad', 'url': passedurl}
+    params = {'apikey': virustotalapi, 'url': passedurl}
     response = requests.post('https://www.virustotal.com/vtapi/v2/url/scan', data=params, verify=False)
     json_response = response.json()
-    params = {'apikey': '312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad',
+    params = {'apikey': virustotalapi,
               'resource': str(json_response['scan_id'])}
     response = requests.post('https://www.virustotal.com/vtapi/v2/url/report',
                              params=params, verify=False)
@@ -87,7 +86,7 @@ def virustotalurl(passedurl):
 
 # Urlscan.io url search remember to aquire the image
 def scaniourl(passedurl):
-    headers = {'Content-Type': 'application/json', 'API-Key': '292eb904-b5c3-4c56-be26-06aebd73fae8'}
+    headers = {'Content-Type': 'application/json', 'API-Key': urlscanapi}
     params = {"url": passedurl, "public": "on"}
     json_response = requests.post('https://urlscan.io/api/v1/scan/', headers=headers, data=params, verify=False)
     return (str(json_response))
@@ -119,8 +118,9 @@ def safelinkpassed():
     decode_url = urllib.parse.unquote(target_url)
     urlreport(decode_url)
 
+
 def getScreenshot(urlpassed):
-    #key = beginCapture("http://www.amazon.com", "1200x800", "true", "firefox", "true")
+    # key = beginCapture("http://www.amazon.com", "1200x800", "true", "firefox", "true")
     url = urlpassed
     fullpage = True
     viewport = "1200x800"
@@ -130,10 +130,9 @@ def getScreenshot(urlpassed):
     tCounter = 0
     tCountIncr = 3
 
-
     serverUrl = "https://api.screenshotapi.io/capture"
     print('Sending request: ' + url)
-    headers = {'apikey': 'b00e28cf-6204-44f0-af6f-b7b0b48f6750'}
+    headers = {'apikey': screenshotapi}
     params = {'url': urllib.parse.unquote(url).encode('utf8'), 'viewport': viewport, 'fullpage': fullpage,
               'webdriver': webdriver, 'javascript': javascript}
     result = requests.post(serverUrl, data=params, headers=headers, verify=False)
@@ -142,12 +141,9 @@ def getScreenshot(urlpassed):
     json_results = json.loads(result.text)
     resultkey = json_results['key']
 
-
-
-
     while True:
         url = 'https://api.screenshotapi.io/retrieve'
-        headers = {'apikey': 'b00e28cf-6204-44f0-af6f-b7b0b48f6750'}
+        headers = {'apikey': screenshotapi}
         params = {'key': resultkey}
         print('Trying to retrieve: ' + url)
         result = requests.get(url, params=params, headers=headers, verify=False)
@@ -163,7 +159,7 @@ def getScreenshot(urlpassed):
             successresult = {'success': False}
         if successresult["success"]:
             print("Saving screenshot to: downloaded_screenshot.png" + resultkey)
-            #open('downloaded_screenshot.png', 'wb').write(result['bytes'])
+            # open('downloaded_screenshot.png', 'wb').write(result['bytes'])
             break
         else:
             tCounter += tCountIncr
@@ -173,6 +169,7 @@ def getScreenshot(urlpassed):
                 print("Timed out while downloading: " + resultkey)
                 break
     return [imageRes, resultkey]
+
 
 def sneakpeak(urlpassed, report):
     sneakreport = report
@@ -184,7 +181,7 @@ def sneakpeak(urlpassed, report):
     popup.title("DIP Sneak Peak")
     # a little more than width and height of image
     w = 1200
-    h = 900
+    h = 800
     x = 300
     y = 300
     # use width x height + x_offset + y_offset (no spaces!)
@@ -192,7 +189,7 @@ def sneakpeak(urlpassed, report):
     # this GIF picture previously downloaded to tinypic.com
     image_url = urlpassed
     image_byt = urllib.request.urlopen(image_url).read()
-    image_b64 = base64.encodestring(image_byt)
+    image_b64 = base64.encodebytes(image_byt)
     photo = PhotoImage(data=image_b64)
     # create a white canvas
     cv = Canvas(popup, bg='white')
@@ -201,10 +198,11 @@ def sneakpeak(urlpassed, report):
     # create_image(xpos, ypos, image, anchor)
     cv.create_image(0, 0, image=photo, anchor="nw")
 
-    reportlabel = Label(popup, text = sneakreport)
+    reportlabel = Label(popup, text=sneakreport)
     reportlabel.grid(row=1, column=0)
 
     popup.mainloop()
+
 
 def attachscreenshot(screenshotlink, screenshotkey, username, password, sysId):
     image_url = screenshotlink
@@ -238,8 +236,6 @@ def attachscreenshot(screenshotlink, screenshotkey, username, password, sysId):
     print(data)
 
 
-
-
 ########################REPORT#########################################################
 def urlreport(urlpassed=None):
     if (urlpassed == None):
@@ -250,20 +246,19 @@ def urlreport(urlpassed=None):
     report = ""
     report += virustotalurl(str(data))
     report += "\n"
-    #report += scaniourl(str(data))#not working, who cares
+    # report += scaniourl(str(data))#not working, who cares
     print(report)
     username = usr.get()
     password = pw.get()
     caller_id = caller.get()
     report += "\nLink at: " + data
     sysId = ticketgenerate(username, password, caller_id, report)
-    #run the screenshot capture
+    # run the screenshot capture
     screenshotlink = getScreenshot(data)
-    #attach screenshot to ticket
+    # attach screenshot to ticket
     attachscreenshot(screenshotlink[0], screenshotlink[1], username, password, sysId)
-    #run the popup nugget
+    # run the popup nugget
     sneakpeak(screenshotlink[0], report)
-
 
 
 def filereport(filehash=None):
@@ -316,12 +311,14 @@ def ticketgenerate(username, password, caller_id, description):
 
     r = requests.post(url=uri, data=json.dumps(payload), auth=auth, verify=False, headers=headers)
     content = r.json()
+    if (r.status_code != 200):
+        tkMessageBox.showerror("Error", "Status Code != 200")
     assert (r.status_code == 200)
     print("Response Status Code: " + str(r.status_code))
     print("Response JSON Content: " + str(content))
     resultlist = content['records']
     sysId = resultlist[0]['sys_id']
-    print (sysId)
+    print(sysId)
     if str(r.status_code) == "200":
         return sysId
 
@@ -365,7 +362,7 @@ if __name__ == '__main__':
     e4 = Entry(root, width=180)
     e4.grid(row=6, column=1)
 
-    b4 = Button(root, text='Safelink decode/analysis', command=safelinkpassed, font="System")
+    b4 = Button(root, text='Safelink Decode+Analysis', command=safelinkpassed, font="System")
     b4.grid(row=6, column=0)
     label = Label(root, text="Hot Dog Build").grid(row=7, columnspan=2)
 
