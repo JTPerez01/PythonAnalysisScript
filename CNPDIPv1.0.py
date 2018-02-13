@@ -38,24 +38,27 @@ screenshotapi = 'b00e28cf-6204-44f0-af6f-b7b0b48f6750'
 
 # add error protection
 
-# Malwares file search based on hash
+# Malwares file search based on hash NOT WORKING!!!!!!!!!!!!!!!!!!
 def malwaresfile(passedhash):
-    params = {'api_key': malwaresapi, 'hash':
+    params = {'api_key': malwaresapi, 'Hash':
         passedhash}
-    response = requests.get('https://www.malwares.com/api/v2/file/behaviorinfo', params=params, verify=False)
+    response = requests.get('https://www.malwares.com/api/v2/file/mwsinfo', params=params, verify=False)
     json_response = response.json()
+    reportreturned = ""
+    print (json_response)
     if (json_response['result_code'] == 0):
-        print("There is no data on this hash from Malwares")
+        reportreturned += "There is no data on this hash from Malwares"
     else:
-        print("The Security Level From Malwares is: " + str(json_response["security_level"]))
+        reportreturned += "The Security Level From Malwares is: " + str(json_response["security_level"]) + "\n"
         if (json_response["security_level"] == 3):
-            print("This Is Declared As Severe Malicious\n")
+            reportreturned += "This Is Declared As Severe Malicious\n"
         elif (json_response["security_level"] == 2):
-            print("This Is Declared As Moderately Malicious\n")
+            reportreturned += "This Is Declared As Moderately Malicious\n"
         elif (json_response["security_level"] == 1):
-            print("This Is No Detetction\n")
+            reportreturned += "This Is No Detetction\n"
         else:
-            print("Error: Check Code For Integrity\n")
+            reportreturned += "Error: Check Code For Integrity\n"
+    return reportreturned
 
 
 # Virus Total file search based on hash
@@ -64,11 +67,12 @@ def virustotalfile(passedhash):
               'resource': passedhash}
     response = requests.get('https://www.virustotal.com/vtapi/v2/file/report', params=params, verify=False)
     json_response2 = response.json()
-    print("The Number Of Positive Match Detections On VirusTotal: " + str(json_response2["positives"]))
+    returnedreport = ""
+    returnedreport += "The Number Of Positive Match Detections On VirusTotal: " + str(json_response2["positives"])
+    return returnedreport
 
-    # Virus Total url search
 
-
+# Virus Total url search
 def virustotalurl(passedurl):
     params = {'apikey': virustotalapi, 'url': passedurl}
     response = requests.post('https://www.virustotal.com/vtapi/v2/url/scan', data=params, verify=False)
@@ -171,7 +175,7 @@ def getScreenshot(urlpassed):
                 break
     return [imageRes, resultkey]
 
-
+#pcAOmPSL3e1j
 def sneakpeak(urlpassed, report):
     sneakreport = report
     popup = Toplevel(root)
@@ -270,8 +274,14 @@ def filereport(filehash=None):
         print("Passing HASH: " + str(data))
     else:
         data = filehash
-    malwaresfile(data)
-    virustotalfile(data)
+    report = ""
+    #report += malwaresfile(data) + "\n"
+    report += virustotalfile(data)
+    username = usr.get()
+    password = pw.get()
+    caller_id = caller.get()
+    ticketgenerate(username, password, caller_id, report)
+
 
 #######################TICKET GENERATION################################################
 
