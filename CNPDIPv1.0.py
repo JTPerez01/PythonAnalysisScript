@@ -65,8 +65,9 @@ def malwaresfile(passedhash):
 def virustotalfile(passedhash):
     params = {'apikey': virustotalapi,
               'resource': passedhash}
-    response = requests.get('https://www.virustotal.com/vtapi/v2/file/report', params=params, verify=False)
+    response = requests.get('https://www.virustotal.com/vtapi/v2/file/scan', params=params, verify=False)
     json_response2 = response.json()
+    print (json_response2)
     returnedreport = ""
     returnedreport += "The Number Of Positive Match Detections On VirusTotal: " + str(json_response2["positives"])
     return returnedreport
@@ -208,7 +209,7 @@ def sneakpeak(urlpassed, report):
 
     popup.mainloop()
 
-
+#####################ATTACH STUFF TO TICKET############################################
 def attachscreenshot(screenshotlink, screenshotkey, username, password, sysId):
     image_url = screenshotlink
     sysId = sysId
@@ -240,6 +241,33 @@ def attachscreenshot(screenshotlink, screenshotkey, username, password, sysId):
     data = response.json()
     print(data)
 
+
+def attachfile(username, password, sysId, file):
+    # Set the request parameters
+    url = 'https://centerpointenergy.service-now.com/api/now/attachment/file?table_name=incident&table_sys_id=' + sysId + '&file_name=' + file
+
+    # Specify the file To send. When specifying fles to send make sure you specify the path to the file, in
+    # this example the file was located in the same directory as the python script being executed.
+    data = open(file, 'rb').read()
+
+    # Eg. User name="admin", Password="admin" for this code sample.
+    user = username
+    pwd = password
+
+    # Set proper headers
+    headers = {"Content-Type": "*/*", "Accept": "application/json"}
+
+    # Do the HTTP request
+    response = requests.post(url, auth=(user, pwd), headers=headers, data=data)
+
+    # Check for HTTP codes other than 201
+    if response.status_code != 201:
+        print('Status:', response.status_code, 'Headers:', response.headers, 'Error Response:', response.json())
+        exit()
+
+    # Decode the JSON response into a dictionary and use the data
+    data = response.json()
+    print(data)
 
 ########################REPORT#########################################################
 def urlreport(urlpassed=None):
@@ -280,7 +308,8 @@ def filereport(filehash=None):
     username = usr.get()
     password = pw.get()
     caller_id = caller.get()
-    ticketgenerate(username, password, caller_id, report)
+    sysId = ticketgenerate(username, password, caller_id, report)
+    #attachfile()
 
 
 #######################TICKET GENERATION################################################
