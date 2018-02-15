@@ -117,7 +117,10 @@ def hashthenfilesearch():
 def safelinkpassed():
     data = e4.get()
     e4.delete(0, END)
-    url_parts = str(data).split("?")[1]
+    try:
+        url_parts = str(data).split("?")[1]
+    except IndexError:
+        safelinkerror(data)
     params = url_parts.split("&")
     target_url = None
     for x in range(int(len(params))):
@@ -126,6 +129,20 @@ def safelinkpassed():
             target_url = namval[1]
     decode_url = urllib.parse.unquote(target_url)
     urlreport(decode_url)
+
+
+def safelinkerror(data):
+    errorrootsl = Toplevel(root)
+    Grid.rowconfigure(errorrootsl, 0, weight=1)
+    Grid.columnconfigure(errorrootsl, 0, weight=1)
+    errorrootsl.title("DIP Error")
+    w = 200
+    h = 100
+    x = 50
+    y = 50
+    errorrootsl.geometry("%dx%d+%d+%d" % (w, h, x, y))
+    errorlabel = Label(errorrootsl, text="Error decoding safelink: Check Format\nPassed SL: " + data)
+    errorlabel.grid(row=0, column=0, sticky='NSEW')
 
 
 def getScreenshot(urlpassed):
