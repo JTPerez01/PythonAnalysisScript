@@ -65,7 +65,7 @@ def malwaresfile(passedhash):
 def virustotalfile(passedhash):
     params = {'apikey': virustotalapi,
               'resource': passedhash}
-    response = requests.get('https://www.virustotal.com/vtapi/v2/file/scan', params=params, verify=False)
+    response = requests.get('https://www.virustotal.com/vtapi/v2/file/report', params=params, verify=False)
     json_response2 = response.json()
     print (json_response2)
     returnedreport = ""
@@ -78,6 +78,9 @@ def virustotalurl(passedurl):
     params = {'apikey': virustotalapi, 'url': passedurl}
     response = requests.post('https://www.virustotal.com/vtapi/v2/url/scan', data=params, verify=False)
     json_response = response.json()
+    print (json_response)
+    if (json_response['response_code']==-1):
+        errorscreenshot(passedurl)
     params = {'apikey': virustotalapi,
               'resource': str(json_response['scan_id'])}
     response = requests.post('https://www.virustotal.com/vtapi/v2/url/report',
@@ -148,11 +151,11 @@ def getScreenshot(urlpassed):
     resultkey = json_results['key']
 
     while True:
-        url = 'https://api.screenshotapi.io/retrieve'
+        urlr = 'https://api.screenshotapi.io/retrieve'
         headers = {'apikey': screenshotapi}
         params = {'key': resultkey}
         print('Trying to retrieve: ' + url)
-        result = requests.get(url, params=params, headers=headers, verify=False)
+        result = requests.get(urlr, params=params, headers=headers, verify=False)
         # {"status":"ready","imageUrl":"http://screenshotapi.s3.amazonaws.com/captures/f469a4c54b4852b046c6f210935679ae.png"}
         json_results = json.loads(result.text)
         if json_results["status"] == "ready":
@@ -173,8 +176,25 @@ def getScreenshot(urlpassed):
             time.sleep(tCountIncr)
             if tCounter > timeout:
                 print("Timed out while downloading: " + resultkey)
+                errorscreenshot(url)
                 break
+
     return [imageRes, resultkey]
+
+
+def errorscreenshot(url):
+    errorroot = Toplevel(root)
+    Grid.rowconfigure(errorroot, 0, weight = 1)
+    Grid.columnconfigure(errorroot, 0, weight = 1)
+    errorroot.title("DIP Error")
+    w = 200
+    h = 100
+    x = 50
+    y = 50
+    errorroot.geometry("%dx%d+%d+%d" % (w, h, x, y))
+    errorlabel = Label(errorroot, text="Screenshot not generated.\nDomain may not exist.\n"+url)
+    errorlabel.grid(row=0, column=0, sticky='NSEW')
+
 
 #pcAOmPSL3e1j
 def sneakpeak(urlpassed, report):
@@ -368,7 +388,7 @@ if __name__ == '__main__':
     # add tkinter buttons to accept url or choose file
     root = Tk()
     root.title("CenterPoint Diagnostic Information Program")
-    root.minsize(width=300, height=600)
+    root.minsize(width=300, height=200)
     # input with button for urlreport
     l1 = Label(root, text="CNP Username")
     l1.grid(row=0, column=0)
