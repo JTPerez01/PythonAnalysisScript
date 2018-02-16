@@ -15,7 +15,6 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 
-
 #########################TO DO LIST###################################################
 # Add a gui - DONE
 # Research the ability to drag and drop
@@ -213,13 +212,15 @@ def errorscreenshot(url):
     errorlabel.grid(row=0, column=0, sticky='NSEW')
 
 
-#pcAOmPSL3e1j
+#sneak peak add buttons to copy malicous email text, copy non malicious text
 def sneakpeak(urlpassed, report):
     sneakreport = report
     popup = Toplevel(root)
     Grid.rowconfigure(popup, 0, weight=10)
     Grid.rowconfigure(popup, 1, weight=1)
     Grid.rowconfigure(popup, 2, weight=1)
+    Grid.rowconfigure(popup, 3, weight=2)
+    Grid.rowconfigure(popup, 4, weight=3)
     Grid.columnconfigure(popup, 0, weight=10)
     popup.title("DIP Sneak Peak")
     # a little more than width and height of image
@@ -244,7 +245,32 @@ def sneakpeak(urlpassed, report):
     reportlabel = Label(popup, text=sneakreport)
     reportlabel.grid(row=1, column=0)
 
+    copymalicious = Button(popup, text="Copy Malicious Response.", command=copym)
+    copymalicious.grid(row=2, column=0)
+
+    copynonmalicious = Button(popup, text="Copy Non-Malicious Reponse.", command=copynm)
+    copynonmalicious.grid(row=3, column=0)
+
     popup.mainloop()
+
+def copym():
+    r = Tk()
+    r.withdraw()
+    r.clipboard_clear()
+    r.clipboard_append('Hello XXXX,\n\n\tIt appears that this email was malicious. Please do not open any links or attachments associated with the message.  Please delete the message from your Inbox, Sent Items and Deleted Items.\n\nSincerely,')
+    r.update()  # now it stays on the clipboard after the window is closed
+    r.mainloop()
+
+
+def copynm():
+    r = Tk()
+    r.withdraw()
+    r.clipboard_clear()
+    r.clipboard_append('Hello XXXX,\n\n\tIt appears that this email is not malicious. However, we advise to delete emails from unknown parties or suspicious domains. If this party is unknown, do not open any links or attachments associated with the message.  Please delete message from your Inbox, Sent Items and Deleted Items. Sincerely,')
+    r.update()  # now it stays on the clipboard after the window is closed
+    r.mainloop()
+
+
 
 #####################ATTACH STUFF TO TICKET############################################
 def attachscreenshot(screenshotlink, screenshotkey, username, password, sysId):
