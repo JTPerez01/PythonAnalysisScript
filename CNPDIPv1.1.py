@@ -5,6 +5,7 @@
 # https://docs.servicenow.com/bundle/geneva-servicenow-platform/page/integrate/inbound_rest/reference/r_AttachmentAPI-POST.html
 # Add the module to attach the .png, that would be wicked-pissah
 import hashlib
+import time
 from tkinter import *
 from tkinter import filedialog
 import urllib
@@ -80,11 +81,15 @@ def virustotalurl(passedurl):
     print (json_response)
     if (json_response['response_code']==-1):
         errorscreenshot(passedurl)
-    params = {'apikey': virustotalapi,
-              'resource': str(json_response['scan_id'])}
-    response = requests.post('https://www.virustotal.com/vtapi/v2/url/report',
-                             params=params, verify=False)
-    json_response = response.json()
+        params = {'apikey': virustotalapi,
+                  'resource': str(json_response['scan_id'])}
+    while True:
+        response = requests.get('https://www.virustotal.com/vtapi/v2/url/report',
+                                 params=params, verify=False)
+        json_response = response.json()
+        if (json_response['response_code']!=0):
+            break
+        time.sleep(1)
     print(json_response)
     result1 = ("VirusTotal URL Positives: " + str(json_response['positives']) + "\nLink Of Report: " + str(
         json_response['permalink']))
@@ -266,7 +271,7 @@ def copynm():
     r = Tk()
     r.withdraw()
     r.clipboard_clear()
-    r.clipboard_append('Hello XXXX,\n\n\tIt appears that this email is not malicious. However, we advise to delete emails from unknown parties or suspicious domains. If this party is unknown, do not open any links or attachments associated with the message.  Please delete message from your Inbox, Sent Items and Deleted Items. Sincerely,')
+    r.clipboard_append('Hello XXXX,\n\n\tIt appears that this email is not malicious. However, we advise to delete emails from unknown parties or suspicious domains. If this party is unknown, do not open any links or attachments associated with the message.  Please delete message from your Inbox, Sent Items and Deleted Items.\n\nSincerely,')
     r.update()  # now it stays on the clipboard after the window is closed
     r.mainloop()
 
