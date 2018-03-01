@@ -46,7 +46,7 @@ def malwaresfile(passedhash):
     json_response = response.json()
     reportreturned = ""
     print (json_response)
-    if (json_response['result_code'] == 0):
+    if ((json_response['result_code']) == 0):
         reportreturned += "There is no data on this hash from Malwares"
     else:
         reportreturned += "The Security Level From Malwares is: " + str(json_response["security_level"]) + "\n"
@@ -81,15 +81,18 @@ def virustotalurl(passedurl):
     print (json_response)
     if (json_response['response_code']==-1):
         errorscreenshot(passedurl)
-        params = {'apikey': virustotalapi,
-                  'resource': str(json_response['scan_id'])}
+    params = {'apikey': virustotalapi,'resource': str(json_response['scan_id'])}
+    emptyList = []
     while True:
         response = requests.get('https://www.virustotal.com/vtapi/v2/url/report',
                                  params=params, verify=False)
         json_response = response.json()
-        if (json_response['response_code']!=0):
+        print(json_response)
+        if (json_response == emptyList):
+            time.sleep(2)
+        else:
             break
-        time.sleep(1)
+
     print(json_response)
     result1 = ("VirusTotal URL Positives: " + str(json_response['positives']) + "\nLink Of Report: " + str(
         json_response['permalink']))
