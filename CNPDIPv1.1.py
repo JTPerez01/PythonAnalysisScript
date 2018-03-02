@@ -148,9 +148,9 @@ def getScreenshot(urlpassed):
     viewport = "1200x800"
     webdriver = "firefox"
     javascript = True
-    timeout = 30
+    timeout = 40
     tCounter = 0
-    tCountIncr = 3
+    tCountIncr = 4
 
     serverUrl = "https://api.screenshotapi.io/capture"
     print('Sending request: ' + url)
@@ -189,6 +189,7 @@ def getScreenshot(urlpassed):
             time.sleep(tCountIncr)
             if tCounter > timeout:
                 print("Timed out while downloading: " + resultkey)
+                #Might want to add an option to errorscreenshot that would allow more time to attach.
                 errorscreenshot(url)
                 break
 
