@@ -16,17 +16,6 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 
-#########################TO DO LIST###################################################
-# Add a gui - DONE
-# Research the ability to drag and drop
-# Add md5 hashing - DONE with SHA256
-# Add report writing, complete with link
-# Add support for URL search with phishing - DONE
-# Get and display a screenshot - Applied for API key - WORKIN ON
-# Add multithreading for the requests and then ask for results later?
-# Mesh with PySide for license properties?
-# Add outlook Suspicious Folder Scan
-# Is there a way to convert the outlook safelink into regular link?
 
 ########################API KEYS######################################################
 virustotalapi = '312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad'
@@ -88,8 +77,8 @@ def virustotalurl(passedurl):
                                  params=params, verify=False)
         json_response = response.json()
         print(json_response)
-        if (json_response == emptyList):
-            time.sleep(2)
+        if (json_response == emptyList) or json_response['response_code'] == 0 :
+            time.sleep(8)
         else:
             break
 
