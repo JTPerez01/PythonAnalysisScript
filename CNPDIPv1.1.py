@@ -277,7 +277,7 @@ def attachscreenshot(screenshotlink, screenshotkey, username, password, sysId):
     imageId = screenshotkey + '.png'
     image_byt = urllib.request.urlopen(image_url).read()
     # Set the request parameters
-    url = 'https://centerpointenergy.service-now.com/api/now/attachment/file?table_name=incident&table_sys_id=' + sysId + '&file_name=' + imageId
+    url = 'https://website.service-now.com/api/now/attachment/file?table_name=incident&table_sys_id=' + sysId + '&file_name=' + imageId
 
     # Specify the file To send. When specifying fles to send make sure you specify the path to the file, in
     # this example the file was located in the same directory as the python script being executed.
@@ -305,7 +305,7 @@ def attachscreenshot(screenshotlink, screenshotkey, username, password, sysId):
 
 def attachfile(username, password, sysId, file):
     # Set the request parameters
-    url = 'https://centerpointenergy.service-now.com/api/now/attachment/file?table_name=incident&table_sys_id=' + sysId + '&file_name=' + file
+    url = 'https://website.service-now.com/api/now/attachment/file?table_name=incident&table_sys_id=' + sysId + '&file_name=' + file
 
     # Specify the file To send. When specifying fles to send make sure you specify the path to the file, in
     # this example the file was located in the same directory as the python script being executed.
@@ -382,7 +382,7 @@ def ticketgenerate(username, password, caller_id, description):
     }
 
     auth = HTTPBasicAuth(str(username), str(password))
-    uri = "https://centerpointenergy.service-now.com/incident.do?JSONv2"
+    uri = "https://website.service-now.com/incident.do?JSONv2"
 
     # define http headers for request
     headers = {
@@ -428,7 +428,7 @@ def ticketgenerate(username, password, caller_id, description):
 if __name__ == '__main__':
     # add tkinter buttons to accept url or choose file
     root = Tk()
-    root.title("CenterPoint Diagnostic Information Program")
+    root.title("website Diagnostic Information Program")
     root.minsize(width=300, height=200)
     # input with button for urlreport
     l1 = Label(root, text="CNP Username")
