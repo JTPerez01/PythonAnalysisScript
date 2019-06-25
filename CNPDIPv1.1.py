@@ -18,10 +18,10 @@ from requests.auth import HTTPBasicAuth
 
 
 ########################API KEYS######################################################
-virustotalapi = '312cd916423489df57dd96f8d374618d6f7759ebf484558f2c30ad2337406cad'
-malwaresapi = '2343F1B952B883187CCE5BF73A81681E698774C5BC2B15E9AD6DC2AB1DC83062'
-urlscanapi = '292eb904-b5c3-4c56-be26-06aebd73fae8'
-screenshotapi = 'b00e28cf-6204-44f0-af6f-b7b0b48f6750'
+virustotalapi = ''
+malwaresapi = ''
+urlscanapi = ''
+screenshotapi = ''
 ########################Malicious File Detection######################################
 
 
